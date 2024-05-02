@@ -6,11 +6,25 @@ import {
 } from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 
-const checkUniqueUsername = (username: string) => {
-  const user = db.user.findUnique({
+const checkUniqueUsername = async (username: string) => {
+  const user = await db.user.findUnique({
     where: {
       username,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return !Boolean(user);
+};
+
+const checkUniqueEmail = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
     },
     select: {
       id: true,
@@ -29,12 +43,12 @@ const formSchema = z
       })
       .trim()
       .toLowerCase()
-      .refine(
-        (username) => !username.includes("potato"),
-        "No potatoes allowed!"
-      )
       .refine(checkUniqueUsername, "이미 있는 유저 입니다."),
-    email: z.string().email().toLowerCase(),
+    email: z
+      .string()
+      .email()
+      .toLowerCase()
+      .refine(checkUniqueEmail, "중복된 이메일 입니다."),
     password: z.string(),
     // .min(PASSWORD_MIN_LENGTH)
     // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
@@ -61,5 +75,19 @@ export async function createAccount(prevState: any, formData: FormData) {
   if (!result.success) {
     return result.error.flatten();
   } else {
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+
+    const user = await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    console.log(user);
   }
 }
