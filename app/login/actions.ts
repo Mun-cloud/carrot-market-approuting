@@ -7,6 +7,9 @@ import {
 } from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
+import bcrypt from "bcrypt";
+import getSession from "@/lib/session";
+import { redirect } from "next/navigation";
 
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
@@ -43,8 +46,32 @@ export async function logIn(prevState: any, formData: FormData) {
     return result.error.flatten();
   } else {
     console.log(result.data);
-    // 이메일로 유저 찾기
+    const user = await db.user.findUnique({
+      where: {
+        email: result.data.email,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    });
 
+    const ok = await bcrypt.compare(
+      result.data.password,
+      user!.password ?? "xxxx"
+    );
+    if (ok) {
+      const session = await getSession();
+      session.id = user!.id;
+      redirect("/profile");
+    } else {
+      return {
+        fieldErrors: {
+          password: ["잘못된 비밀번호"],
+          email: [],
+        },
+      };
+    }
     // 유저가 있다면 비밀번호 입력값 해싱
     // 일치하다면 로그인
     // 로그인 후 '/profile'페이지 리다이렉트
