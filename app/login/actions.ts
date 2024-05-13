@@ -45,7 +45,6 @@ export async function logIn(prevState: any, formData: FormData) {
     // console.log(result.error.flatten());
     return result.error.flatten();
   } else {
-    console.log(result.data);
     const user = await db.user.findUnique({
       where: {
         email: result.data.email,
@@ -60,9 +59,12 @@ export async function logIn(prevState: any, formData: FormData) {
       result.data.password,
       user!.password ?? "xxxx"
     );
+
     if (ok) {
       const session = await getSession();
+
       session.id = user!.id;
+      await session.save();
       redirect("/profile");
     } else {
       return {
