@@ -3,6 +3,9 @@ import {
   userEmailGithub,
   userProfileGithub,
 } from "@/lib/auth";
+import db from "@/lib/db";
+import { setSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -18,16 +21,36 @@ export async function GET(request: NextRequest) {
 
   const email = await userEmailGithub(access_token);
 
-  /**
-   * TODO
-   * 유저 유무 판단.
-   * 이메일 중복 알고리즘
-   * 세션 로그인
-   * 유저 없을 시 유저 생성
-   * 세션 로그인
-   * 세션 로그인 함수 추가
-   * 프로필 페이지로 리다이렉트
-   */
+  const user = await db.user.findUnique({
+    where: {
+      github_id: id + "",
+    },
+    select: {
+      id: true,
+    },
+  });
 
-  return Response.json({ hello: "world" });
+  if (user) {
+    await setSession(user.id);
+    return redirect("/profile");
+  }
+
+  const isExistUsername = await db.user.findFirst({
+    where: {
+      username: login,
+    },
+  });
+
+  const newUser = await db.user.create({
+    data: {
+      github_id: id + "",
+      avatar: avatar_url,
+      username: isExistUsername ? login + "_github" : login,
+      email,
+    },
+  });
+
+  await setSession(newUser.id);
+
+  return redirect("/profile");
 }

@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import getSession from "@/lib/session";
+import getSession, { setSession } from "@/lib/session";
 
 const checkUsername = (username: string) => !username.includes("potato");
 const checkPasswords = ({
@@ -107,15 +107,7 @@ export async function createAccount(prevState: any, formData: FormData) {
       },
     });
 
-    console.log(user);
-
-    const session = await getSession();
-
-    //@ts-ignore
-    session.id = user.id;
-
-    await session.save();
-
+    await setSession(user.id);
     redirect("/profile");
   }
 }
