@@ -111,7 +111,14 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
           userId: true,
         },
       });
+
       await setSession(token!.userId);
+      await db.sMSToken.delete({
+        where: {
+          id: token!.id,
+        },
+      });
+
       redirect("/profile");
     }
   }
