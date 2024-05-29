@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import db from "@/lib/db";
 import crypto from "crypto";
 import { setSession } from "@/lib/session";
+import twilio from "twilio";
 
 const phoneSchema = z
   .string()
@@ -89,6 +90,16 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
             },
           },
         },
+      });
+      const client = twilio(
+        process.env.TWILIO_ACCOUNT_SID,
+        process.env.TWILIO_AUTH_TOKEN
+      );
+      await client.messages.create({
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
+        body: `Your Karrot verification code is: ${token}`,
+        from: process.env.TIWILO_PHONE_NUMBER!,
+        to: process.env.MY_PHONE_NUMBER!,
       });
       return {
         token: true,
