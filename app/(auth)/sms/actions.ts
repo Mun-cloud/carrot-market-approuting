@@ -96,9 +96,8 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
         process.env.TWILIO_AUTH_TOKEN
       );
       await client.messages.create({
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
         body: `Your Karrot verification code is: ${token}`,
-        from: process.env.TIWILO_PHONE_NUMBER!,
+        from: process.env.TWILIO_PHONE_NUMBER!,
         to: process.env.MY_PHONE_NUMBER!,
       });
       return {
