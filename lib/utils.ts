@@ -14,3 +14,6 @@ export function formatToTimeAgo(date: string) {
 export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
+
+export const toCloudflareImageUrl = (imageId: string) =>
+  `https://imagedelivery.net/yJC6Z7NpaGQ_RoEViD1TVw/${imageId}`;
