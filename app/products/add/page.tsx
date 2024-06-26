@@ -14,9 +14,15 @@ import { ProductType, productSchema } from "./schema";
 const ProductAddPage = () => {
   const [preview, setPreview] = useState("");
   const [uploadUrl, setUploadUrl] = useState("");
-  const [photoId, setPhotoId] = useState("");
 
-  const { register } = useForm<ProductType>({
+  const [file, setFile] = useState<File | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<ProductType>({
     resolver: zodResolver(productSchema),
   });
 
@@ -33,18 +39,17 @@ const ProductAddPage = () => {
     }
     const url = URL.createObjectURL(file);
     setPreview(url);
-
+    setFile(file);
     const { success, result } = await getUploadUrl();
     if (success) {
       const { id, uploadURL } = result;
       setUploadUrl(uploadURL);
-      setPhotoId(id);
+      setValue("photo", toCloudflareImageUrl(id));
     }
   };
 
-  const interceptAction = async (_: any, formData: FormData) => {
+  const onSubmit = handleSubmit(async (data: ProductType) => {
     // 클라우드 플레어 이미지 업로드
-    const file = formData.get("photo");
     if (!file) {
       alert("이미지 파일이 없습니다.");
       return;
@@ -66,17 +71,27 @@ const ProductAddPage = () => {
     }
 
     // photo에 데이터를 string으로 치환
-    const photoUrl = toCloudflareImageUrl(photoId);
-    formData.set("photo", photoUrl);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("price", data.price + "");
+    formData.append("description", data.description);
+    formData.append("photo", data.photo);
 
     // uploadProduct함수 호출
-    return uploadProduct(_, formData);
+    const errors = await uploadProduct(formData);
+    if (errors) {
+      // 에러 핸들링
+      console.log(errors);
+    }
+  });
+
+  const onValid = async () => {
+    await onSubmit();
   };
 
-  const [state, action] = useFormState(interceptAction, null);
   return (
     <div>
-      <form action={action} className="p-5 flex flex-col gap-5">
+      <form action={onValid} className="p-5 flex flex-col gap-5">
         <label
           htmlFor="photo"
           className="border-2 aspect-square flex items-center justify-center flex-col text-neutral-300 border-neutral-300 rounded-md border-dashed cursor-pointer bg-center bg-cover bg-no-repeat"
@@ -89,7 +104,7 @@ const ProductAddPage = () => {
               <PhotoIcon className="w-20" />
               <div className="text-neutral-400 text-sm">
                 사진을 추가해주세요.
-                {state?.fieldErrors.photo}
+                {[errors.photo?.message ?? ""]}
               </div>
             </>
           )}
@@ -105,21 +120,21 @@ const ProductAddPage = () => {
           required
           placeholder="제목"
           type="text"
-          errors={state?.fieldErrors.title}
+          errors={[errors.title?.message ?? ""]}
           {...register("title")}
         />
         <Input
           required
           placeholder="가격"
           type="number"
-          errors={state?.fieldErrors.price}
+          errors={[errors.price?.message ?? ""]}
           {...register("price")}
         />
         <Input
           required
           placeholder="자세한 설명"
           type="text"
-          errors={state?.fieldErrors.description}
+          errors={[errors.description?.message ?? ""]}
           {...register("description")}
         />
         <Button text="작성 완료" />
