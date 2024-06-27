@@ -56,14 +56,14 @@ const ProductList = ({ initialProducts }: ProductListProps) => {
         <ListProduct key={product.id} {...product} />
       ))}
 
-      {!isLastPage && (
+      {/* {!isLastPage && (
         <span
           className="text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 accent-inherit active:scale-95"
           ref={trigger}
         >
           {isLoading ? "로딩 중" : "Load more"}
         </span>
-      )}
+      )} */}
     </div>
   );
 };
