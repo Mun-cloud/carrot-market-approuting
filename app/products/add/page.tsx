@@ -5,7 +5,6 @@ import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import { getUploadUrl, uploadProduct } from "./actions";
-import { useFormState } from "react-dom";
 import { toCloudflareImageUrl } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

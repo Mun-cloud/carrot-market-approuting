@@ -2,10 +2,10 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { unstable_cache as nextCache, revalidateTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getCachedProduct } from "./actions";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
@@ -16,41 +16,8 @@ async function getIsOwner(userId: number) {
   return false;
 }
 
-async function getProduct(id: number) {
-  console.log("product");
-  return await db.product.findUnique({
-    where: { id },
-    include: {
-      user: {
-        select: {
-          username: true,
-          avatar: true,
-        },
-      },
-    },
-  });
-}
-
-const getCachedProduct = nextCache(getProduct, ["product-detail"], {
-  tags: ["product-detail", "xxxx"],
-});
-
-async function getProductTitle(id: number) {
-  console.log("title");
-  return await db.product.findUnique({
-    where: { id },
-    select: {
-      title: true,
-    },
-  });
-}
-
-const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
-  tags: ["product-title", "xxxx"],
-});
-
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getCachedProductTitle(Number(params.id));
+  const product = await getCachedProduct(Number(params.id));
   return { title: product?.title };
 }
 
@@ -69,34 +36,36 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
-      <form
-        action={async () => {
-          "use server";
-          revalidateTag("xxxx");
-        }}
-      >
-        <button>revalidate</button>
-      </form>
       <div className="relative aspect-square">
         <Image fill src={`${product.photo}/public`} alt={product.title} />
       </div>
-      <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
-        <div className="size-10 rounded-full overflow-hidden">
-          {product.user.avatar !== null ? (
-            <Image
-              className="object-fill"
-              src={product.user.avatar}
-              alt={product.user.username}
-              width={40}
-              height={40}
-            />
-          ) : (
-            <UserIcon className="size-10" />
-          )}
+      <div className="flex items-center justify-between p-5 border-b border-neutral-700">
+        <div className="flex items-center gap-3">
+          <div className="size-10 rounded-full overflow-hidden">
+            {product.user.avatar !== null ? (
+              <Image
+                className="object-fill"
+                src={product.user.avatar}
+                alt={product.user.username}
+                width={40}
+                height={40}
+              />
+            ) : (
+              <UserIcon className="size-10" />
+            )}
+          </div>
+          <div className="">
+            <h3>{product.user.username}</h3>
+          </div>
         </div>
-        <div className="">
-          <h3>{product.user.username}</h3>
-        </div>
+        {isOwner && (
+          <Link
+            href={`/products/${id}/edit`}
+            className="border px-2 py-1 rounded-md border-orange-500 hover:bg-orange-500 hover:text-inherit hover:border-transparent transition-colors"
+          >
+            수정
+          </Link>
+        )}
       </div>
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{product.title}</h1>

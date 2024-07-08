@@ -4,7 +4,8 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { productSchema } from "./schema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { productEditSchema } from "../[id]/edit/schema";
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -42,6 +43,38 @@ export async function uploadProduct(formData: FormData) {
     }
   }
 }
+
+export const editProduct = async (formData: FormData) => {
+  const data = {
+    id: formData.get("id"),
+    photo: formData.get("photo"),
+    title: formData.get("title"),
+    price: formData.get("price"),
+    description: formData.get("description"),
+  };
+
+  const result = productEditSchema.safeParse(data);
+
+  if (result.success) {
+    const product = await db.product.update({
+      where: {
+        id: result.data.id,
+      },
+      data: {
+        photo: result.data.photo,
+        title: result.data.title,
+        price: result.data.price,
+        description: result.data.description,
+      },
+    });
+
+    revalidatePath("home");
+    revalidateTag("product-detail");
+    redirect(`/products/${product.id}`);
+  } else {
+    return result.error.flatten();
+  }
+};
 
 export async function getUploadUrl() {
   const response = await fetch(
