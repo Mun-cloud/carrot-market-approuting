@@ -58,14 +58,25 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
             <h3>{product.user.username}</h3>
           </div>
         </div>
-        {isOwner && (
-          <Link
-            href={`/products/${id}/edit`}
-            className="border px-2 py-1 rounded-md border-orange-500 hover:bg-orange-500 hover:text-inherit hover:border-transparent transition-colors"
-          >
-            수정
-          </Link>
-        )}
+        <div className="flex gap-2">
+          {isOwner && (
+            <Link
+              href={`/products/${id}/edit`}
+              className="border px-2 py-1 rounded-md border-orange-500 hover:bg-orange-500 hover:text-inherit hover:border-transparent transition-colors"
+            >
+              수정
+            </Link>
+          )}
+
+          {isOwner && (
+            <form action="">
+              <button className="border px-2 py-1 rounded-md text-red-500 border-red-500 hover:bg-red-500 hover:text-inherit hover:border-transparent transition-colors">
+                {/* 클릭 이벤트 만들기(로그아웃 버튼 참고) */}
+                삭제
+              </button>
+            </form>
+          )}
+        </div>
       </div>
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{product.title}</h1>
@@ -75,12 +86,6 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
         <span className="font-semibold text-xl">
           {formatToWon(product.price)}
         </span>
-        {isOwner ? (
-          <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-            {/* 클릭 이벤트 만들기(로그아웃 버튼 참고) */}
-            Delete product
-          </button>
-        ) : null}
         <Link
           className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
           href={``}
