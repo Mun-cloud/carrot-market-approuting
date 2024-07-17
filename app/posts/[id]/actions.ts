@@ -26,6 +26,7 @@ async function getPost(id: number) {
         },
         comments: {
           select: {
+            id: true,
             payload: true,
             created_at: true,
             user: {
@@ -115,9 +116,7 @@ export const dislikePost = async (postId: number) => {
 export async function addComment(
   postId: number,
   formData: {
-    userId: number;
     payload: string;
-    postId: number;
   }
 ) {
   const session = await getSession();
@@ -127,10 +126,11 @@ export async function addComment(
     data: {
       payload: formData.payload,
       postId,
-      userId: formData.userId,
+      userId: session.id,
     },
     select: {
       id: true,
     },
   });
+  revalidateTag(`post-detail-${postId}`);
 }

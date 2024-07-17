@@ -17,14 +17,16 @@ interface LikeButtonProps {
 const LikeButton = ({ isLiked, likeCount, postId }: LikeButtonProps) => {
   const [state, reducerFn] = useOptimistic(
     { isLiked, likeCount },
-    (previeousState, payload: number) => ({
-      isLiked: false,
-      likeCount: payload,
+    (previousState, payload) => ({
+      isLiked: !previousState.isLiked,
+      likeCount: previousState.isLiked
+        ? previousState.likeCount - 1
+        : previousState.likeCount + 1,
     })
   );
 
   const onClick = async () => {
-    reducerFn(10000);
+    reducerFn(undefined);
     if (isLiked) {
       await dislikePost(postId);
     } else {
@@ -39,6 +41,7 @@ const LikeButton = ({ isLiked, likeCount, postId }: LikeButtonProps) => {
           : "text-neutral-400 border-neutral-400 hover:bg-neutral-800"
       }`}
       onClick={onClick}
+      type="button"
     >
       {state.isLiked ? (
         <>

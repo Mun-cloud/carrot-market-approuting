@@ -6,46 +6,47 @@ interface Comment {
   user: {
     username: string;
   };
+  id: number;
   payload: string;
 }
 
 interface AddCommentProps {
   postId: number;
+  commentsCount: number;
   reducerFn: (action: Comment) => void;
 }
 
 const postCommentSchema = z.object({
   payload: z.string(),
-  postId: z.number(),
-  userId: z.number(),
 });
 
-const AddComment = ({ postId, reducerFn }: AddCommentProps) => {
+const AddComment = ({ postId, commentsCount, reducerFn }: AddCommentProps) => {
   const addCommentWithPostId = addComment.bind(null, postId);
 
-  const handleSumbit = (formData: FormData) => {
+  const handleSumbit = async (formData: FormData) => {
     const data = {
       payload: formData.get("payload"),
-      postId: formData.get("postId"),
-      userId: formData.get("userId"),
     };
     const result = postCommentSchema.safeParse(data);
     if (result.success) {
+      addCommentWithPostId(result.data);
       reducerFn({
         created_at: new Date(),
         payload: result.data.payload,
+        id: 0,
         user: {
-          username: "anan",
+          username: "you",
         },
       });
-      addCommentWithPostId(result.data);
+    } else {
+      console.log(result.error.flatten());
     }
   };
   return (
     <div className="flex flex-col gap-1">
       <div>
         <span>댓글 입력</span>
-        <span className="text-[14px]"></span>
+        <span className="text-[14px]">{commentsCount}</span>
       </div>
       <form
         className="flex items-center justify-between gap-3"
