@@ -6,7 +6,6 @@ import { Prisma } from "@prisma/client";
 import Link from "next/link";
 
 async function getInitialProducts() {
-  console.log("asdf");
   const products = await db.product.findMany({
     select: {
       title: true,
