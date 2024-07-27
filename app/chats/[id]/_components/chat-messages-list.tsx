@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InitialChatMessages } from "../page";
 import Image from "next/image";
 import { formatToTimeAgo } from "@/lib/utils";
 import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, RealtimeChannel } from "@supabase/supabase-js";
+import { CHANNEL_EVENT_NAME } from "@/lib/constants";
+import { saveMessage } from "../../actions";
 
 const SUPABASE_PUBLIC_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3Y3hiaW90a29pZnVlemZ2andsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE3NTA3ODEsImV4cCI6MjAzNzMyNjc4MX0.aX7EfcGrv0ljoCIpVE4jbLiGAFDGmSDlyZcAlkwiKY4";
@@ -16,15 +18,20 @@ interface ChatMessagesListProps {
   chatRoomId: string;
   userId: number;
   initialMessages: InitialChatMessages;
+  username: string;
+  avatar: string | null;
 }
 
 const ChatMessagesList = ({
   chatRoomId,
   userId,
   initialMessages,
+  username,
+  avatar,
 }: ChatMessagesListProps) => {
   const [messages, setMessages] = useState(initialMessages);
   const [message, setMessage] = useState("");
+  const channel = useRef<RealtimeChannel>();
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -32,19 +39,50 @@ const ChatMessagesList = ({
     } = event;
     setMessage(value);
   };
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    alert(message);
+    setMessages((prevMsgs) => [
+      ...prevMsgs,
+      {
+        id: Date.now(),
+        payload: message,
+        created_at: new Date(),
+        userId,
+        user: {
+          username: "string",
+          avatar: "xxx",
+        },
+      },
+    ]);
+    await saveMessage(message, chatRoomId);
+    channel.current?.send({
+      type: "broadcast",
+      event: CHANNEL_EVENT_NAME,
+      payload: {
+        id: Date.now(),
+        payload: message,
+        created_at: new Date(),
+        userId,
+        user: { username, avatar },
+      },
+    });
     setMessage("");
   };
 
   useEffect(() => {
     const client = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
-    const channel = client.channel(`room-${chatRoomId}`);
-    channel.on("broadcast", { event: "message" }, (payload) =>
-      console.log(payload)
-    );
-  }, []);
+    channel.current = client.channel(`room-${chatRoomId}`);
+    channel.current
+      .on("broadcast", { event: CHANNEL_EVENT_NAME }, (payload) => {
+        console.log(payload);
+        setMessages((prevMsgs) => [...prevMsgs, payload.payload]);
+      })
+      .subscribe();
+
+    return () => {
+      channel.current?.unsubscribe();
+    };
+  }, [chatRoomId]);
 
   return (
     <div className="flex flex-col gap-5 p-5 min-h-screen justify-end">

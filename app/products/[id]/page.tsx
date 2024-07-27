@@ -48,7 +48,7 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
       },
     });
 
-    redirect(`/cahts/${room.id}`);
+    redirect(`/chats/${room.id}`);
   };
   return (
     <div>

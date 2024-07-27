@@ -1,6 +1,6 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import ModalBackBtn from "../../_components/ModalBackBtn";
 import Image from "next/image";
 import { UserIcon } from "@heroicons/react/24/solid";
@@ -48,6 +48,22 @@ const Modal = async ({ params }: { params: { id: string } }) => {
   }
 
   const isOwner = await getIsOwner(product.userId);
+  const createChatRoom = async () => {
+    "use server";
+    const session = await getSession()!;
+    const room = await db.chatRoom.create({
+      data: {
+        users: {
+          connect: [{ id: product.userId }, { id: session.id }],
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    redirect(`/chats/${room.id}`);
+  };
 
   return (
     <div className="absolute h-full w-full z-50 bg-black items-center left-0 top-0 flex justify-center bg-opacity-60 overflow-auto">
@@ -88,18 +104,11 @@ const Modal = async ({ params }: { params: { id: string } }) => {
               <span className="font-semibold text-xl">
                 {formatToWon(product.price)}
               </span>
-              {isOwner ? (
-                <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-                  {/* 클릭 이벤트 만들기(로그아웃 버튼 참고) */}
-                  Delete product
+              <form action={createChatRoom}>
+                <button className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold">
+                  채팅하기
                 </button>
-              ) : null}
-              <Link
-                className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
-                href={``}
-              >
-                채팅하기
-              </Link>
+              </form>
             </div>
           </div>
         </div>
