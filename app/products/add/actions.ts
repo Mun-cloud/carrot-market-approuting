@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { productSchema } from "./schema";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { productEditSchema } from "../[id]/edit/schema";
+import { href } from "@/lib/href";
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -38,7 +39,7 @@ export async function uploadProduct(formData: FormData) {
           id: true,
         },
       });
-      revalidatePath("/home");
+      revalidatePath(href.home);
       redirect(`/products/${product.id}`);
     }
   }

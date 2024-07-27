@@ -1,3 +1,4 @@
+import { href } from "@/lib/href";
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
@@ -8,7 +9,7 @@ export default function SocialLogin() {
       <div className="flex flex-col gap-3">
         <Link
           className="primary-btn flex h-10 items-center justify-center gap-2"
-          href="/github/start"
+          href={href.github.start}
         >
           <svg
             className="size-6"
@@ -27,7 +28,7 @@ export default function SocialLogin() {
         </Link>
         <Link
           className="primary-btn flex h-10 items-center justify-center gap-2"
-          href="/sms"
+          href={href.sms}
         >
           <ChatBubbleOvalLeftEllipsisIcon className="size-6" />
           <span>Continue with SMS</span>

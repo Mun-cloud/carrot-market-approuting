@@ -1,7 +1,9 @@
 "use server";
 
 import db from "@/lib/db";
+import { href } from "@/lib/href";
 import getSession from "@/lib/session";
+import { revalidatePath } from "next/cache";
 
 /**
  * 채팅방 메세지 DB에 저장
@@ -20,4 +22,5 @@ export async function saveMessage(payload: string, chatRoomId: string) {
       id: true,
     },
   });
+  revalidatePath(href.chats);
 }

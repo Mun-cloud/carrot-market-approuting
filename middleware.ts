@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSession from "./lib/session";
+import { href } from "./lib/href";
 
 interface Routes {
   [key: string]: boolean;
@@ -7,11 +8,11 @@ interface Routes {
 
 const publicOnlyUrl: Routes = {
   "/": true,
-  "/login": true,
-  "/sms": true,
-  "/create-account": true,
-  "/github/start": true,
-  "/github/complete": true,
+  [href.login]: true,
+  [href.sms]: true,
+  [href.signup]: true,
+  [href.github.start]: true,
+  [href.github.complete]: true,
 };
 
 export async function middleware(request: NextRequest) {
@@ -25,7 +26,7 @@ export async function middleware(request: NextRequest) {
     }
   } else {
     if (isPublicOnlyUrl) {
-      return NextResponse.redirect(new URL("/home", request.url));
+      return NextResponse.redirect(new URL(href.home, request.url));
     }
   }
 }

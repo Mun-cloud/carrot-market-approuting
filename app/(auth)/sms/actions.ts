@@ -7,6 +7,7 @@ import db from "@/lib/db";
 import crypto from "crypto";
 import { setSession } from "@/lib/session";
 import twilio from "twilio";
+import { href } from "@/lib/href";
 
 const phoneSchema = z
   .string()
@@ -129,7 +130,7 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
         },
       });
 
-      redirect("/profile");
+      redirect(href.home);
     }
   }
 }

@@ -11,6 +11,7 @@ import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import getSession, { setSession } from "@/lib/session";
+import { href } from "@/lib/href";
 
 const checkUsername = (username: string) => !username.includes("potato");
 const checkPasswords = ({
@@ -108,6 +109,6 @@ export async function createAccount(prevState: any, formData: FormData) {
     });
 
     await setSession(user.id);
-    redirect("/profile");
+    redirect(href.profile);
   }
 }

@@ -4,6 +4,7 @@ import {
   userProfileGithub,
 } from "@/lib/auth";
 import db from "@/lib/db";
+import { href } from "@/lib/href";
 import { setSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   if (user) {
     await setSession(user.id);
-    return redirect("/profile");
+    return redirect(href.profile);
   }
 
   const isExistUsername = await db.user.findFirst({
@@ -52,5 +53,5 @@ export async function GET(request: NextRequest) {
 
   await setSession(newUser.id);
 
-  return redirect("/profile");
+  return redirect(href.profile);
 }
