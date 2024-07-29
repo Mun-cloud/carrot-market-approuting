@@ -1,28 +1,9 @@
-import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
-async function getStream(id: number) {
-  return await db.liveStream.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      title: true,
-      stream_id: true,
-      stream_key: true,
-      userId: true,
-      user: {
-        select: {
-          username: true,
-          avatar: true,
-        },
-      },
-    },
-  });
-}
+import StreamEditBtns from "./_components/stream-edit-btns";
+import { getStream } from "./actions";
 
 const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
@@ -34,18 +15,28 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   if (!stream) {
     notFound();
   }
+
   const session = await getSession();
+
   return (
     <div>
       <div className="relative aspect-video">
-        <iframe
-          //   src={`https://${process.env.CLOUDFLARE_DOMAIN}/${process.env.CLOUDFLARE_ACCOUNT_ID}/iframe`}
-          src="https://customer-kes62bzmn6r4hvng.cloudflarestream.com/7eb4070421a85b9101ec4dee4b616f66/iframe"
-          title="Example Stream video"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full"
-        ></iframe>
+        {stream.replay_id ? (
+          <video className="w-full h-full" controls width={500} height={300}>
+            <source
+              src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.replay_id}/manifest/video.m3u8`}
+              type="video/m3u8"
+            />
+          </video>
+        ) : (
+          <iframe
+            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.stream_id}/iframe`}
+            title="Example Stream video"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        )}
       </div>
       <div className="flex items-center justify-between p-5 border-b border-neutral-700">
         <div className="flex items-center gap-3">
@@ -66,6 +57,13 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
             <h3>{stream.user.username}</h3>
           </div>
         </div>
+        {stream.userId === session.id! && (
+          <StreamEditBtns
+            id={id}
+            streamId={stream.stream_id}
+            isEnded={!!stream.replay_id}
+          />
+        )}
       </div>
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{stream.title}</h1>
