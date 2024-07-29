@@ -1,10 +1,65 @@
+import db from "@/lib/db";
 import { href } from "@/lib/href";
+import { formatToTimeAgo } from "@/lib/utils";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 import Link from "next/link";
 
-const LivePage = () => {
+async function getStreams() {
+  const streams = await db.liveStream.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+    select: {
+      id: true,
+      title: true,
+      created_at: true,
+      stream_id: true,
+      user: {
+        select: {
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  });
+  return streams;
+}
+
+const LivePage = async () => {
+  const streams = await getStreams();
   return (
-    <div>
+    <div className="flex flex-col">
+      {streams?.map((stream) => (
+        <Link
+          className="py-5 px-4 border-b last:border-b-0 flex gap-3 text-white"
+          href={`${href.stream.home}/${stream.id}`}
+          key={stream.id}
+        >
+          <Image
+            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.stream_id}/thumbnails/thumbnail.jpg?time=5s`}
+            alt={stream.title}
+            width={50}
+            height={50}
+          />
+          <Image
+            src={stream.user.avatar!}
+            alt={stream.user.username}
+            className="aspect-square object-cover rounded-xl"
+            width={50}
+            height={50}
+          />
+          <div className="grow flex flex-col gap-0.5">
+            <div className="flex justify-between items-center">
+              <span className="font-bold">{stream.user.username}</span>
+              <span className="text-[12px] text-white/50">
+                {formatToTimeAgo(stream.created_at.toString())}
+              </span>
+            </div>
+            <p className="text-[14px] line-clamp-1">{stream.title}</p>
+          </div>
+        </Link>
+      ))}
       <Link
         href={href.stream.add}
         className="bg-orange-500 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors hover:bg-orange-400"

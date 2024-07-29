@@ -8,6 +8,7 @@ const nextConfig = {
       {
         hostname: "imagedelivery.net",
       },
+      { hostname: process.env.CLOUDFLARE_DOMAIN },
     ],
   },
 };

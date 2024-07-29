@@ -27,6 +27,7 @@ export async function startStream(_: any, formData: FormData) {
   );
 
   const data = await response.json();
+  console.log(data);
   if (!data || !data.success) return;
   const session = await getSession();
   const stream = await db.liveStream.create({
