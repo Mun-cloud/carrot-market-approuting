@@ -1,9 +1,11 @@
 import getSession from "@/lib/session";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import StreamEditBtns from "./_components/stream-edit-btns";
 import { getStream } from "./actions";
+import Link from "next/link";
+import { href } from "@/lib/href";
 
 const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
@@ -20,14 +22,21 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
+      <div className="h-[40px] border-b border-neutral-700 bg-neutral-800 mb-2 flex items-center justify-center relative">
+        <Link className="absolute left-3" href={href.stream.home}>
+          <ArrowLeftIcon className="text-white size-5" />
+        </Link>
+        <span>{stream.title}</span>
+      </div>
       <div className="relative aspect-video">
         {stream.replay_id ? (
-          <video className="w-full h-full" controls width={500} height={300}>
-            <source
-              src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.replay_id}/manifest/video.m3u8`}
-              type="video/m3u8"
-            />
-          </video>
+          <iframe
+            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.replay_id}/iframe`}
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            // allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
         ) : (
           <iframe
             src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.stream_id}/iframe`}
@@ -81,6 +90,8 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       ) : null}
+
+      {stream.replay_id && <div>채팅 올리기</div>}
     </div>
   );
 };

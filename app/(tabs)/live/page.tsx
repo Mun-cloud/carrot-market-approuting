@@ -15,6 +15,7 @@ async function getStreams() {
       title: true,
       created_at: true,
       stream_id: true,
+      replay_id: true,
       user: {
         select: {
           username: true,
@@ -36,22 +37,27 @@ const LivePage = async () => {
           href={`${href.stream.home}/${stream.id}`}
           key={stream.id}
         >
-          <Image
-            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.stream_id}/thumbnails/thumbnail.jpg?time=5s`}
-            alt={stream.title}
-            width={50}
-            height={50}
-          />
-          <Image
-            src={stream.user.avatar!}
-            alt={stream.user.username}
-            className="aspect-square object-cover rounded-xl"
-            width={50}
-            height={50}
-          />
+          <div className="aspect-video h-[80px]">
+            <Image
+              src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.replay_id}/thumbnails/thumbnail.jpg`}
+              alt={stream.title}
+              width={142}
+              height={80}
+              className="w-full h-full object-contain"
+            />
+          </div>
           <div className="grow flex flex-col gap-0.5">
             <div className="flex justify-between items-center">
-              <span className="font-bold">{stream.user.username}</span>
+              <div className="flex gap-1 items-center">
+                <Image
+                  src={stream.user.avatar!}
+                  alt={stream.user.username}
+                  className="aspect-square size-[22px] object-cover rounded-xl"
+                  width={50}
+                  height={50}
+                />
+                <span className="font-bold">{stream.user.username}</span>
+              </div>
               <span className="text-[12px] text-white/50">
                 {formatToTimeAgo(stream.created_at.toString())}
               </span>

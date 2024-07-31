@@ -12,7 +12,7 @@ export const href = {
     add: "/product/add",
   },
   stream: {
-    home: "/streams",
+    home: "/live",
     add: "/streams/add",
   },
   github: {
