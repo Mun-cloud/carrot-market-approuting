@@ -77,7 +77,7 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
         <div className="flex gap-2">
           {isOwner && (
             <Link
-              href={`/products/${id}/edit`}
+              href={`/products/item/${id}/edit`}
               className="border px-2 py-1 rounded-md border-orange-500 hover:bg-orange-500 hover:text-inherit hover:border-transparent transition-colors"
             >
               수정

@@ -1,5 +1,5 @@
+import { productSchema } from "@/app/products/add/schema";
 import { z } from "zod";
-import { productSchema } from "../../add/schema";
 
 export const productEditSchema = productSchema.extend({
   id: z.coerce.number(),

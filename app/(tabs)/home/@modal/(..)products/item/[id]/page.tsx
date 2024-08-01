@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { notFound, redirect } from "next/navigation";
-import ModalBackBtn from "../../_components/ModalBackBtn";
+import ModalBackBtn from "../../../_components/ModalBackBtn";
 import Image from "next/image";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -31,13 +31,16 @@ async function getProduct(id: number) {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
+  const id = Number(params.id);
+  if (isNaN(id)) {
+    return notFound();
+  }
   const product = await getProduct(Number(params.id));
   return { title: product?.title };
 }
 
 const Modal = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
-
   if (isNaN(id)) {
     return notFound();
   }

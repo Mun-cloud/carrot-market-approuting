@@ -5,8 +5,9 @@ import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { productSchema } from "./schema";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { productEditSchema } from "../[id]/edit/schema";
+
 import { href } from "@/lib/href";
+import { productEditSchema } from "../item/[id]/edit/schema";
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -40,7 +41,7 @@ export async function uploadProduct(formData: FormData) {
         },
       });
       revalidatePath(href.home);
-      redirect(`/products/${product.id}`);
+      redirect(`/products/item/${product.id}`);
     }
   }
 }
@@ -71,7 +72,7 @@ export const editProduct = async (formData: FormData) => {
 
     revalidatePath("home");
     revalidateTag("product-detail");
-    redirect(`/products/${product.id}`);
+    redirect(`/products/item/${product.id}`);
   } else {
     return result.error.flatten();
   }
