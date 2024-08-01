@@ -71,7 +71,7 @@ const Modal = async ({ params }: { params: { id: string } }) => {
       <div className="max-w-[80vw] w-full flex justify-center h-[80vh] overflow-auto">
         <div className="bg-neutral-900 text-neutral-200 rounded-md flex flex-col items-center w-full overflow-auto">
           <Image
-            src={`${product.photo}/public`}
+            src={product.photo}
             alt={product.title}
             className="w-full rounded-md"
             width={300}
