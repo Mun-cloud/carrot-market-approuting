@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export function formatToTimeAgo(date: string) {
   const time = new Date(date).getTime();
   const now = new Date().getTime();
@@ -15,5 +22,8 @@ export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
 
-export const toCloudflareImageUrl = (imageId: string) =>
-  `https://imagedelivery.net/yJC6Z7NpaGQ_RoEViD1TVw/${imageId}`;
+export const toCloudflareImageUrl = (
+  id: string,
+  size: "public" | "avatar" | undefined = "public"
+) =>
+  `https://imagedelivery.net/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_HASH}/${id}/${size}`;

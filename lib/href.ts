@@ -8,8 +8,8 @@ export const href = {
   signup: "/create-account",
   login: "/login",
   product: {
-    home: "/product",
-    add: "/product/add",
+    home: "/home",
+    add: "/products/add",
   },
   stream: {
     home: "/live",
