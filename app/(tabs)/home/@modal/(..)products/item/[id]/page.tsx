@@ -5,7 +5,7 @@ import ModalBackBtn from "../../../_components/ModalBackBtn";
 import Image from "next/image";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { formatToWon } from "@/lib/utils";
+import { formatToWon, imageUrlWithSize } from "@/lib/utils";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
@@ -74,7 +74,7 @@ const Modal = async ({ params }: { params: { id: string } }) => {
       <div className="max-w-[80vw] w-full flex justify-center h-[80vh] overflow-auto">
         <div className="bg-neutral-900 text-neutral-200 rounded-md flex flex-col items-center w-full overflow-auto">
           <Image
-            src={product.photo}
+            src={imageUrlWithSize(product.photo)}
             alt={product.title}
             className="w-full rounded-md"
             width={300}

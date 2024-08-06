@@ -22,8 +22,10 @@ export function formatToWon(price: number) {
   return price.toLocaleString("ko-KR");
 }
 
-export const toCloudflareImageUrl = (
-  id: string,
+export const toCloudflareImageUrl = (id: string) =>
+  `https://imagedelivery.net/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_HASH}/${id}`;
+
+export const imageUrlWithSize = (
+  url: string,
   size: "public" | "avatar" | undefined = "public"
-) =>
-  `https://imagedelivery.net/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_HASH}/${id}/${size}`;
+) => `${url}/${size}`;
