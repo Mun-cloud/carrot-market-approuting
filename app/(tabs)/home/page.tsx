@@ -1,3 +1,4 @@
+import AddLink from "@/components/add-link";
 import ListProduct from "@/components/list-product";
 import ProductList from "@/components/product-list";
 import db from "@/lib/db";
@@ -36,12 +37,7 @@ const ProductsPage = async () => {
   return (
     <div>
       <ProductList initialProducts={initialProducts} />
-      <Link
-        href={href.product.add}
-        className="bg-orange-500 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors hover:bg-orange-400"
-      >
-        <PlusIcon className="size-10" />
-      </Link>
+      <AddLink href={href.product.add} />
     </div>
   );
 };
