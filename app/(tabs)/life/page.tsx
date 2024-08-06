@@ -1,4 +1,6 @@
+import AddLink from "@/components/add-link";
 import db from "@/lib/db";
+import { href } from "@/lib/href";
 import { formatToTimeAgo } from "@/lib/utils";
 import {
   ChatBubbleBottomCenterTextIcon,
@@ -61,6 +63,7 @@ const LifePage = async () => {
           </div>
         </Link>
       ))}
+      <AddLink href={href.life.add} />
     </div>
   );
 };
