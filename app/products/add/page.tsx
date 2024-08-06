@@ -9,6 +9,7 @@ import { toCloudflareImageUrl } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductType, productSchema } from "./schema";
+import Submit from "@/components/submit";
 
 const ProductAddPage = () => {
   const [preview, setPreview] = useState("");
@@ -136,7 +137,7 @@ const ProductAddPage = () => {
           errors={[errors.description?.message ?? ""]}
           {...register("description")}
         />
-        <Button text="작성 완료" />
+        <Submit>작성 완료</Submit>
       </form>
     </div>
   );
