@@ -30,8 +30,8 @@ const TabBar = () => {
         )}
         <span>홈</span>
       </Link>
-      <Link href={href.life} className="flex flex-col items-center gap-px">
-        {pathname === href.life ? (
+      <Link href={href.life.home} className="flex flex-col items-center gap-px">
+        {pathname === href.life.home ? (
           <SolidNewspaperIcon className="w-7 h-7" />
         ) : (
           <OutlineNewspaperIcon className="w-7 h-7" />

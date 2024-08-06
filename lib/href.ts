@@ -1,6 +1,6 @@
 export const href = {
   home: "/home",
-  life: "/life",
+  life: { home: "/life", add: "/posts/add" },
   chats: "/chats",
   live: "/live",
   profile: "/profile",
