@@ -3,6 +3,7 @@
 import db from "@/lib/db";
 import { href } from "@/lib/href";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export async function getStream(id: number) {
@@ -72,4 +73,13 @@ export async function endStream(formData: FormData) {
   }
 }
 
-// export async function deleteStream
+export async function deleteStream(formdata: FormData) {
+  const id = Number(formdata.get("id"));
+  await db.liveStream.delete({
+    where: {
+      id,
+    },
+  });
+  revalidatePath(href.stream.home);
+  redirect(href.stream.home);
+}
