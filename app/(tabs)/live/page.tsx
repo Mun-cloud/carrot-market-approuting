@@ -17,6 +17,7 @@ async function getStreams() {
       created_at: true,
       stream_id: true,
       replay_id: true,
+      chat_room: true,
       user: {
         select: {
           username: true,
@@ -35,7 +36,7 @@ const LivePage = async () => {
       {streams?.map((stream) => (
         <Link
           className="py-5 px-4 border-b last:border-b-0 flex gap-3 text-white"
-          href={`${href.stream.home}/${stream.id}`}
+          href={`${href.stream.stream}/${stream.id}`}
           key={stream.id}
         >
           <div className="aspect-video h-[80px]">
@@ -49,21 +50,21 @@ const LivePage = async () => {
           </div>
           <div className="grow flex flex-col gap-0.5">
             <div className="flex justify-between items-center">
-              <div className="flex gap-1 items-center">
-                <Image
-                  src={stream.user.avatar!}
-                  alt={stream.user.username}
-                  className="aspect-square size-[22px] object-cover rounded-xl"
-                  width={50}
-                  height={50}
-                />
-                <span className="font-bold">{stream.user.username}</span>
-              </div>
+              <p className="font-bold line-clamp-1">{stream.title}</p>
               <span className="text-[12px] text-white/50">
                 {formatToTimeAgo(stream.created_at.toString())}
               </span>
             </div>
-            <p className="text-[14px] line-clamp-1">{stream.title}</p>
+            <div className="flex gap-1 items-center">
+              <Image
+                src={stream.user.avatar!}
+                alt={stream.user.username}
+                className="aspect-square size-[20px] object-cover rounded-xl"
+                width={50}
+                height={50}
+              />
+              <span className="text-[12px]">{stream.user.username}</span>
+            </div>
           </div>
         </Link>
       ))}

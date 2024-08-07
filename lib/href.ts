@@ -14,6 +14,7 @@ export const href = {
   stream: {
     home: "/live",
     add: "/streams/add",
+    stream: "/streams",
   },
   github: {
     start: "/github/start",
