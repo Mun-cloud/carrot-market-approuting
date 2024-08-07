@@ -6,6 +6,7 @@ import StreamEditBtns from "./_components/stream-edit-btns";
 import { getStream } from "./actions";
 import Link from "next/link";
 import { href } from "@/lib/href";
+import NavHeader from "@/components/nav-header";
 
 const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
@@ -22,12 +23,7 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
-      <div className="h-[40px] border-b border-neutral-700 bg-neutral-800 mb-2 flex items-center justify-center relative">
-        <Link className="absolute left-3" href={href.stream.home}>
-          <ArrowLeftIcon className="text-white size-5" />
-        </Link>
-        <span>{stream.title}</span>
-      </div>
+      <NavHeader>{stream.title}</NavHeader>
       <div className="relative aspect-video">
         {stream.replay_id ? (
           <iframe

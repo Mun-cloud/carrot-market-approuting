@@ -27,7 +27,7 @@ export async function startStream(_: any, formData: FormData) {
   );
 
   const data = await response.json();
-  console.log(data);
+
   if (!data || !data.success) return;
   const session = await getSession();
   const stream = await db.liveStream.create({
@@ -39,6 +39,15 @@ export async function startStream(_: any, formData: FormData) {
     },
     select: {
       id: true,
+    },
+  });
+
+  await db.chatRoom.create({
+    data: {
+      live_stream_id: stream.id,
+      users: {
+        connect: [{ id: session.id }],
+      },
     },
   });
 
