@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import LikeButton from "@/components/like-button";
 import { getCachedLikeStatus, getCachedPost } from "./actions";
 import PostComments from "./_components/post-comments";
+import NavHeader from "@/components/nav-header";
 
 const PostDetailPage = async ({ params }: { params: { id: number } }) => {
   const id = Number(params.id);
@@ -21,6 +22,7 @@ const PostDetailPage = async ({ params }: { params: { id: number } }) => {
   const { isLiked, likeCount } = await getCachedLikeStatus(id);
   return (
     <>
+      <NavHeader>{post.title}</NavHeader>
       <div className="p-5 text-white">
         <div className="flex items-center gap-2 mb-2">
           <Image

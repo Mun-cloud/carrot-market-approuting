@@ -15,7 +15,7 @@ const NavHeader = ({ children }: { children?: React.ReactNode }) => {
         <ArrowLeftIcon className="size-5" />
       </button>
 
-      {children}
+      <div className="max-w-[50%] line-clamp-1">{children}</div>
     </div>
   );
 };
