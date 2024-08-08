@@ -5,7 +5,6 @@ import Link from "next/link";
 
 const ChatPage = async () => {
   const chatRooms = await getChatRooms();
-
   return (
     <div className="flex flex-col">
       {chatRooms?.map((room) => (
