@@ -46,9 +46,8 @@ const PostDetailPage = async ({ params }: { params: { id: number } }) => {
             <EyeIcon className="size-5" />
             <span>조회 {post.views}</span>
           </div>
-          <form>
-            <LikeButton isLiked={isLiked} likeCount={likeCount} postId={id} />
-          </form>
+
+          <LikeButton isLiked={isLiked} likeCount={likeCount} postId={id} />
         </div>
       </div>
       <PostComments

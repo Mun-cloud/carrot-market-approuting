@@ -85,7 +85,7 @@ export async function getCachedLikeStatus(postId: number) {
 }
 
 export const likePost = async (postId: number) => {
-  await new Promise((r) => setTimeout(r, 5000));
+  await new Promise((r) => setTimeout(r, 1000));
   try {
     const session = await getSession();
     await db.like.create({
@@ -98,7 +98,7 @@ export const likePost = async (postId: number) => {
   } catch (error) {}
 };
 export const dislikePost = async (postId: number) => {
-  await new Promise((r) => setTimeout(r, 5000));
+  await new Promise((r) => setTimeout(r, 1000));
   try {
     const session = await getSession();
     await db.like.delete({

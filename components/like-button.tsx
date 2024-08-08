@@ -25,36 +25,36 @@ const LikeButton = ({ isLiked, likeCount, postId }: LikeButtonProps) => {
     })
   );
 
-  const onClick = async () => {
+  const onSubmit = async () => {
     reducerFn(undefined);
-    if (isLiked) {
+    if (state.isLiked) {
       await dislikePost(postId);
     } else {
       await likePost(postId);
     }
   };
   return (
-    <button
-      className={`flex items-center gap-2 text-sm border rounded-full p-2 ${
-        state.isLiked
-          ? "bg-orange-500 text-white border-orange-500"
-          : "text-neutral-400 border-neutral-400 hover:bg-neutral-800"
-      }`}
-      onClick={onClick}
-      type="button"
-    >
-      {state.isLiked ? (
-        <>
-          <HandThumbUpIcon className="size-5" />
-          <span>{state.likeCount}</span>
-        </>
-      ) : (
-        <>
-          <OutlineHandThumbUpIcon className="size-5" />
-          <span>공감하기 ({state.likeCount})</span>
-        </>
-      )}
-    </button>
+    <form action={onSubmit}>
+      <button
+        className={`flex items-center gap-2 text-sm border rounded-full p-2 ${
+          state.isLiked
+            ? "bg-orange-500 text-white border-orange-500"
+            : "text-neutral-400 border-neutral-400 hover:bg-neutral-800"
+        }`}
+      >
+        {state.isLiked ? (
+          <>
+            <HandThumbUpIcon className="size-5" />
+            <span>{state.likeCount}</span>
+          </>
+        ) : (
+          <>
+            <OutlineHandThumbUpIcon className="size-5" />
+            <span>공감하기 ({state.likeCount})</span>
+          </>
+        )}
+      </button>
+    </form>
   );
 };
 

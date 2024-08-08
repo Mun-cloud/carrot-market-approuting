@@ -42,8 +42,10 @@ const LifePage = async () => {
           href={`/posts/${post.id}`}
           className="pb-5 mb-5 border-b border-neutral-500 text-neutral-400 flex flex-col last:border-b-0 last:mb-0 gap-2"
         >
-          <h2 className="text-white text-lg font-semibold">{post.title}</h2>
-          <p>{post.description}</p>
+          <h2 className="text-white text-lg font-semibold line-clamp-1">
+            {post.title}
+          </h2>
+          <p className="line-clamp-3">{post.description}</p>
           <div className="flex items-center justify-between text-sm">
             <div className="flex gap-4 items-center">
               <span>{formatToTimeAgo(post.created_at.toString())}</span>
