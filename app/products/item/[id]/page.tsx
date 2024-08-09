@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getCachedProduct, getIsProductOwner } from "./actions";
 import { Prisma } from "@prisma/client";
 import ProductDetail from "./_components/product-detail";
+import NavHeader from "@/components/nav-header";
+import { href } from "@/lib/href";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getCachedProduct(Number(params.id));
@@ -22,7 +24,12 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   }
   const isOwner = await getIsProductOwner(product.userId);
 
-  return <ProductDetail product={product} id={id} isOwner={isOwner} />;
+  return (
+    <>
+      <NavHeader href={href.product.home}>{product.title}</NavHeader>
+      <ProductDetail product={product} id={id} isOwner={isOwner} />
+    </>
+  );
 };
 
 export default ProductDetailPage;
