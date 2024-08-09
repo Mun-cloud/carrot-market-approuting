@@ -27,7 +27,7 @@ const Modal = async ({ params }: { params: { id: string } }) => {
   return (
     <div className="absolute h-full w-full z-50 bg-black items-center left-0 top-0 flex justify-center bg-opacity-60 overflow-auto">
       <ModalBackBtn />
-      <div className="max-w-[90vw] w-full flex justify-center h-[80vh]">
+      <div className="max-w-screen-sm w-[90vw] flex justify-center h-[80vh]">
         <ProductDetail product={product} id={id} isOwner={isOwner} />
       </div>
     </div>

@@ -4,7 +4,7 @@ const ModalLoading = () => {
   return (
     <div className="absolute h-full w-full z-50 bg-black items-center left-0 top-0 flex justify-center bg-opacity-60 overflow-auto">
       <ModalBackBtn />
-      <div className="max-w-[90vw] w-full flex flex-col h-[80vh] overflow-auto bg-neutral-800 rounded-lg">
+      <div className="max-w-screen-sm w-[90vw] flex flex-col h-[80vh] overflow-auto bg-neutral-800 rounded-lg">
         <div className="animate-pulse aspect-square w-full bg-neutral-600" />
         <div className="flex items-center justify-between p-5 border-b border-neutral-700">
           <div className="flex items-center gap-3">
