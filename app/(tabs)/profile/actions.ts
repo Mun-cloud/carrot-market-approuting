@@ -18,5 +18,5 @@ export async function editAvatar(formData: FormData) {
       avatar,
     },
   });
-  revalidatePath(href.profile);
+  revalidatePath(href.profile.home);
 }

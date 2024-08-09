@@ -109,6 +109,6 @@ export async function createAccount(prevState: any, formData: FormData) {
     });
 
     await setSession(user.id);
-    redirect(href.profile);
+    redirect(href.profile.home);
   }
 }

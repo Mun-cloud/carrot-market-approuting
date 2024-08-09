@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   if (user) {
     await setSession(user.id);
-    return redirect(href.profile);
+    return redirect(href.profile.home);
   }
 
   const isExistUsername = await db.user.findFirst({
@@ -53,5 +53,5 @@ export async function GET(request: NextRequest) {
 
   await setSession(newUser.id);
 
-  return redirect(href.profile);
+  return redirect(href.profile.home);
 }

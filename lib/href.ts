@@ -3,7 +3,10 @@ export const href = {
   life: { home: "/life", add: "/posts/add" },
   chats: "/chats",
   live: "/live",
-  profile: "/profile",
+  profile: {
+    home: "/profile",
+    selling: "/profile/my-selling",
+  },
   sms: "/sms",
   signup: "/create-account",
   login: "/login",

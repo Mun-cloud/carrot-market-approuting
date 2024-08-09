@@ -54,8 +54,11 @@ const TabBar = () => {
         )}
         <span>쇼핑</span>
       </Link>
-      <Link href={href.profile} className="flex flex-col items-center gap-px">
-        {pathname === href.profile ? (
+      <Link
+        href={href.profile.home}
+        className="flex flex-col items-center gap-px"
+      >
+        {pathname === href.profile.home ? (
           <SolidUserIcon className="w-7 h-7" />
         ) : (
           <OutlineUserIcon className="w-7 h-7" />

@@ -4,6 +4,8 @@ import { ReceiptTextIcon, TvIcon, UserIcon } from "lucide-react";
 
 import { notFound, redirect } from "next/navigation";
 import UserAvatar from "./_components/user-avatar";
+import Link from "next/link";
+import { href } from "@/lib/href";
 
 async function getUser() {
   const session = await getSession();
@@ -29,8 +31,8 @@ const ProfilePage = async () => {
     redirect("/");
   };
   return (
-    <div>
-      <div className="flex items-center gap-2 py-5">
+    <div className="p-5">
+      <div className="flex items-center gap-2 pt-3 pb-5">
         <UserAvatar username={user.username} avatar={user.avatar!} />
         <h1>{user.username}</h1>
       </div>
@@ -38,9 +40,9 @@ const ProfilePage = async () => {
       <div>
         <div className="font-bold text-[20px]">메뉴</div>
         <div className="flex flex-col *:py-2 *:text-start *:flex *:gap-2">
-          <button>
+          <Link href={href.profile.selling}>
             <ReceiptTextIcon className="size-[20px]" /> 나의 판매 목록
-          </button>
+          </Link>
           <button>
             <TvIcon className="size-[20px]" />
             나의 라이브 목록
