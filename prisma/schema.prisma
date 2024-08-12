@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  username     String       @unique
-  email        String?      @unique
+  id           Int           @id @default(autoincrement())
+  username     String        @unique
+  email        String?       @unique
   password     String?
-  phone        String?      @unique
-  github_id    String?      @unique
+  phone        String?       @unique
+  github_id    String?       @unique
   avatar       String?
-  created_at   DateTime     @default(now())
-  updated_at   DateTime     @updatedAt
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   comments     Comment[]
   likes        Like[]
   live_streams LiveStream[]
@@ -24,7 +24,8 @@ model User {
   posts        Post[]
   products     Product[]
   tokens       SMSToken[]
-  chat_rooms   ChatRoom[]   @relation("ChatRoomToUser")
+  chat_rooms   ChatRoom[]    @relation("ChatRoomToUser")
+  live_message LiveMessage[]
 }
 
 model SMSToken {
@@ -92,13 +93,11 @@ model Like {
 }
 
 model ChatRoom {
-  id             String      @id @default(cuid())
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @updatedAt
-  live_stream_id Int?        @unique
-  live_stream    LiveStream? @relation(fields: [live_stream_id], references: [id], onDelete: SetNull)
-  messages       Message[]
-  users          User[]      @relation("ChatRoomToUser")
+  id         String    @id @default(cuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  messages   Message[]
+  users      User[]    @relation("ChatRoomToUser")
 }
 
 model Message {
@@ -113,14 +112,25 @@ model Message {
 }
 
 model LiveStream {
-  id         Int       @id @default(autoincrement())
-  title      String
-  stream_key String
-  stream_id  String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  userId     Int
-  replay_id  String?
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chat_room  ChatRoom?
+  id           Int           @id @default(autoincrement())
+  title        String
+  stream_key   String
+  stream_id    String
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  userId       Int
+  replay_id    String?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  live_message LiveMessage[]
+}
+
+model LiveMessage {
+  id             Int        @id @default(autoincrement())
+  payload        String
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @updatedAt
+  live_stream_id Int
+  live_stream    LiveStream @relation(fields: [live_stream_id], references: [id], onDelete: Cascade)
+  userId         Int
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
