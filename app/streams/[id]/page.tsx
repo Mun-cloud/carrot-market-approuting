@@ -1,12 +1,12 @@
 import getSession from "@/lib/session";
-import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+
 import { notFound } from "next/navigation";
 import StreamEditBtns from "./_components/stream-edit-btns";
 import { getStream } from "./actions";
-import Link from "next/link";
-import { href } from "@/lib/href";
 import NavHeader from "@/components/nav-header";
+import StreamingPlayer from "@/components/streaming_player";
+import UserAvatar from "@/components/user-avatar";
+import StreamMessages from "./_components/stream-messages";
 
 const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
@@ -22,41 +22,20 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const session = await getSession();
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <NavHeader>{stream.title}</NavHeader>
       <div className="relative aspect-video">
-        {stream.replay_id ? (
-          <iframe
-            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.replay_id}/iframe`}
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-            // allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full"
-          ></iframe>
-        ) : (
-          <iframe
-            src={`https://${process.env.CLOUDFLARE_DOMAIN}/${stream.stream_id}/iframe`}
-            title="Example Stream video"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full"
-          ></iframe>
-        )}
+        <StreamingPlayer
+          videoId={stream.replay_id ? stream.replay_id : stream.stream_id}
+        />
       </div>
       <div className="flex items-center justify-between p-5 border-b border-neutral-700">
         <div className="flex items-center gap-3">
           <div className="size-10 rounded-full overflow-hidden">
-            {stream.user.avatar !== null ? (
-              <Image
-                className="object-fill"
-                src={stream.user.avatar}
-                alt={stream.user.username}
-                width={40}
-                height={40}
-              />
-            ) : (
-              <UserIcon className="size-10" />
-            )}
+            <UserAvatar
+              avatar={stream.user.avatar}
+              username={stream.user.username}
+            />
           </div>
           <div className="">
             <h3>{stream.user.username}</h3>
@@ -74,6 +53,7 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
         <h1 className="text-2xl font-semibold">{stream.title}</h1>
       </div>
 
+      {/* 스트리밍 소유자에게만 보여짐 */}
       {stream.userId === session.id! ? (
         <div className="bg-yellow-200 text-black p-5 rounded-md">
           <div className="flex gap-2">
