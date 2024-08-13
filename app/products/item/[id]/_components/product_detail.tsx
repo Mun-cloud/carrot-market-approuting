@@ -13,7 +13,7 @@ interface ProductDetailProps {
 }
 const ProductDetail = ({ id, product, isOwner }: ProductDetailProps) => {
   return (
-    <div className="flex flex-col bg-neutral-900 rounded-b-lg grow">
+    <div className="flex flex-col bg-neutral-900 rounded-b-lg grow relative overflow-y-auto pb-[104px]">
       <div className="relative aspect-square overflow-hidden">
         <Image
           className="object-cover rounded-t-lg"
@@ -65,7 +65,7 @@ const ProductDetail = ({ id, product, isOwner }: ProductDetailProps) => {
         <h1 className="text-2xl font-semibold">{product!.title}</h1>
         <p>{product!.description}</p>
       </div>
-      <div className="fixed w-full bottom-0 left-0 p-5 pb-10 bg-neutral-800 flex justify-between items-center">
+      <div className="absolute w-full bottom-0 left-0 p-5 pb-10 bg-neutral-800 flex justify-between items-center">
         <span className="font-semibold text-xl">
           {formatToWon(product!.price)}
         </span>

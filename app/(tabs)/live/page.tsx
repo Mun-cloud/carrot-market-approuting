@@ -17,7 +17,6 @@ async function getStreams() {
       created_at: true,
       stream_id: true,
       replay_id: true,
-      chat_room: true,
       user: {
         select: {
           username: true,

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import ModalBackBtn from "../../../_components/ModalBackBtn";
-import ProductDetail from "@/app/products/item/[id]/_components/product-detail";
+import ProductDetail from "@/app/products/item/[id]/_components/product_detail";
 import {
   getCachedProduct,
   getIsProductOwner,

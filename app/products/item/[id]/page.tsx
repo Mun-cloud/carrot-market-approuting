@@ -1,9 +1,8 @@
 import db from "@/lib/db";
-import getSession from "@/lib/session";
 import { notFound } from "next/navigation";
 import { getCachedProduct, getIsProductOwner } from "./actions";
 import { Prisma } from "@prisma/client";
-import ProductDetail from "./_components/product-detail";
+import ProductDetail from "./_components/product_detail";
 import NavHeader from "@/components/nav-header";
 import { href } from "@/lib/href";
 
