@@ -3,67 +3,10 @@ import getSession from "@/lib/session";
 import { Prisma } from "@prisma/client";
 import { notFound } from "next/navigation";
 import ChatMessagesList from "./_components/chat-messages-list";
-
-async function getRoom(id: string) {
-  const room = await db.chatRoom.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      users: {
-        select: { id: true },
-      },
-    },
-  });
-
-  if (room) {
-    const session = await getSession();
-    const canSee = Boolean(room.users.find((user) => user.id === session.id));
-
-    if (!canSee) {
-      return null;
-    }
-  }
-  return room;
-}
-
-const getMessages = async (chatRoomId: string) => {
-  const messages = await db.message.findMany({
-    where: {
-      chatRoomId,
-    },
-    select: {
-      id: true,
-      payload: true,
-      created_at: true,
-      userId: true,
-      user: {
-        select: {
-          avatar: true,
-          username: true,
-        },
-      },
-    },
-  });
-
-  return messages;
-};
+import { getMessages, getRoom, getUserProfile } from "../actions";
+import NavHeader from "@/components/nav-header";
 
 export type InitialChatMessages = Prisma.PromiseReturnType<typeof getMessages>;
-
-const getUserProfile = async () => {
-  const session = await getSession();
-  const user = await db.user.findUnique({
-    where: {
-      id: session.id!,
-    },
-    select: {
-      username: true,
-      avatar: true,
-    },
-  });
-  return user;
-};
 
 const ChatRoom = async ({ params }: { params: { id: string } }) => {
   const room = await getRoom(params.id);
@@ -77,14 +20,20 @@ const ChatRoom = async ({ params }: { params: { id: string } }) => {
   if (!user) {
     return notFound();
   }
+
   return (
-    <ChatMessagesList
-      chatRoomId={params.id}
-      userId={session.id!}
-      username={user.username}
-      avatar={user.avatar}
-      initialMessages={initialMessages}
-    />
+    <div className="flex flex-col min-h-screen">
+      <NavHeader>
+        {room.users.find((user) => user.id !== session.id)?.username}
+      </NavHeader>
+      <ChatMessagesList
+        chatRoomId={params.id}
+        userId={session.id!}
+        username={user.username}
+        avatar={user.avatar}
+        initialMessages={initialMessages}
+      />
+    </div>
   );
 };
 
