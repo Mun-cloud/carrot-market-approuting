@@ -67,7 +67,7 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
         </div>
       ) : null}
 
-      {stream.replay_id && <div>채팅 올리기</div>}
+      <StreamMessages />
     </div>
   );
 };
