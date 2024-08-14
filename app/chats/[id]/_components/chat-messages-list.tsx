@@ -39,8 +39,8 @@ const ChatMessagesList = ({
         created_at: new Date(),
         userId,
         user: {
-          username: "string",
-          avatar: "xxx",
+          username,
+          avatar,
         },
       },
     ]);

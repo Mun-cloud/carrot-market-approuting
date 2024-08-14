@@ -7,6 +7,11 @@ import NavHeader from "@/components/nav-header";
 import StreamingPlayer from "@/components/streaming_player";
 import UserAvatar from "@/components/user-avatar";
 import StreamMessages from "./_components/stream-messages";
+import { Prisma } from "@prisma/client";
+import { getUserProfile } from "@/app/chats/actions";
+
+type Stream = Prisma.PromiseReturnType<typeof getStream>;
+export type IStreamMessages = NonNullable<Stream>["live_message"];
 
 const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
   const id = Number(params.id);
@@ -21,10 +26,12 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
 
   const session = await getSession();
 
+  const user = await getUserProfile();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="max-h-screen min-h-screen flex flex-col">
       <NavHeader>{stream.title}</NavHeader>
-      <div className="relative aspect-video">
+      <div className="relative aspect-video shrink-0">
         <StreamingPlayer
           videoId={stream.replay_id ? stream.replay_id : stream.stream_id}
         />
@@ -58,7 +65,9 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
         <div className="bg-yellow-200 text-black p-5 rounded-md">
           <div className="flex gap-2">
             <span className="font-semibold">Stream URL:</span>
-            <span>rtmps://live.cloudflare.com:443/live/</span>
+            <span className="break-all">
+              rtmps://live.cloudflare.com:443/live/
+            </span>
           </div>
           <div className="flex  flex-wrap">
             <span className="font-semibold">Secret Key:</span>
@@ -67,7 +76,13 @@ const StreamDetailPage = async ({ params }: { params: { id: string } }) => {
         </div>
       ) : null}
 
-      <StreamMessages />
+      <StreamMessages
+        streamId={stream.id}
+        userId={session.id!}
+        initialMessages={stream.live_message}
+        username={user!.username}
+        avatar={user!.avatar!}
+      />
     </div>
   );
 };

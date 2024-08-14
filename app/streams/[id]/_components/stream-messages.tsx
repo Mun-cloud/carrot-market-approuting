@@ -6,17 +6,57 @@ import {
   SUPABASE_URL,
 } from "@/lib/constants";
 import { createClient, RealtimeChannel } from "@supabase/supabase-js";
-import { SendIcon } from "lucide-react";
+
 import { useEffect, useRef, useState } from "react";
+import { IStreamMessages } from "../page";
+import ChatBubble from "@/components/chat-bubble";
+import StreamMessageForm from "./stream-message-form";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface StreamMessagesProps {
+  userId: number;
   streamId: number;
+  username: string;
+  avatar: string;
+  initialMessages: IStreamMessages;
 }
 
-const StreamMessages = ({ streamId }: StreamMessagesProps) => {
-  const [messages, setMessages] = useState();
+const StreamMessages = ({
+  userId,
+  streamId,
+  initialMessages,
+  username,
+  avatar,
+}: StreamMessagesProps) => {
+  const [messages, setMessages] = useState(initialMessages);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const channel = useRef<RealtimeChannel>();
-
+  const onSubmit = async (payload: string) => {
+    const newMsg = {
+      id: Date.now(),
+      created_at: new Date(),
+      payload,
+      user: {
+        id: userId,
+        username,
+        avatar,
+      },
+    };
+    console.log(newMsg);
+    // 로컬 상태값 업데이트
+    setMessages((prevMsg) => [...prevMsg, newMsg]);
+    // supabase 실시간 업데이트
+    channel.current?.send({
+      type: "broadcast",
+      event: STREAM_EVENT_NAME,
+      payload: newMsg,
+    });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+    // prisma업데이트
+  };
   useEffect(() => {
     const client = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
     channel.current = client.channel(`stream-messages-${streamId}`);
@@ -31,19 +71,22 @@ const StreamMessages = ({ streamId }: StreamMessagesProps) => {
       channel.current?.unsubscribe();
     };
   }, [streamId]);
+
   return (
-    <div className="grow pb-[50px] relative">
-      <div className="h-full overflow-y-auto"></div>
-      <div className="absolute bottom-0 w-full left-0 border-t h-[50px] flex items-center justify-center gap-3">
-        <input
-          className="w-[80%] h-[35px] border rounded-full px-3 bg-transparent text-[14px] focus:outline-none ring-1 focus:border-orange-500 peer"
-          required
-          minLength={1}
-        />
-        <button className="bg-neutral-400 py-1 px-2 rounded-full peer-valid:bg-orange-400 peer-valid:*:text-secondary">
-          <SendIcon className="size-[20px] text-neutral-500" />
-        </button>
+    <div className="grow pb-[50px] relative pt-[10px] overflow-y-auto flex flex-col">
+      <div className="overflow-y-auto px-[10px]" ref={chatContainerRef}>
+        {messages.map((msg) => (
+          <ChatBubble
+            isOwner={msg.user.id === userId}
+            key={msg.id}
+            avatar={msg.user.avatar}
+            created_at={msg.created_at}
+            payload={msg.payload}
+            username={msg.user.username}
+          />
+        ))}
       </div>
+      <StreamMessageForm sendMessage={onSubmit} />
     </div>
   );
 };

@@ -12,11 +12,26 @@ export async function getStream(id: number) {
       id,
     },
     select: {
+      id: true,
       title: true,
       stream_id: true,
       stream_key: true,
       replay_id: true,
       userId: true,
+      live_message: {
+        select: {
+          id: true,
+          payload: true,
+          created_at: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              avatar: true,
+            },
+          },
+        },
+      },
       user: {
         select: {
           username: true,
