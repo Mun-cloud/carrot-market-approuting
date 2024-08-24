@@ -10,7 +10,10 @@ export default function Home() {
         <h2 className="text-2xl">당근 마겟에 어서오세요!</h2>
       </div>
       <div className="flex flex-col items-center gap-3 w-full">
-        <Link href={href.signup} className="primary-btn text-lg py-2.5">
+        <Link
+          href={href.signup}
+          className="primary-btn flex items-center justify-center rounded-md bg-orange-500 w-full text-lg py-2.5"
+        >
           시작하기
         </Link>
         <div className="flex gap-2">
